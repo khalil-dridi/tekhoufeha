@@ -1,108 +1,181 @@
 # Product Vision
 
-## 1. Product Overview
+---
 
-TekhouFeha is a web-based marketplace designed to enable individuals to buy and sell second-hand products through a structured and transparent negotiation process. Unlike traditional online marketplaces, where negotiations often take place through external messaging applications or unstructured conversations, TekhouFeha integrates offers, counter-offers, and negotiation history directly into the platform.
+# 1. Product Overview
 
-The platform aims to provide a simple, transparent, and secure environment where buyers and sellers can negotiate efficiently before reaching an agreement.
+**TekhouFeha** is a web-based marketplace that enables individuals to buy and sell second-hand products through a modern and structured buying experience.
 
-Its primary objective is not only to facilitate second-hand transactions but also to improve the online negotiation experience by making it organized, traceable, and user-friendly.
+Unlike traditional marketplaces that rely on direct messaging from the beginning, TekhouFeha introduces two distinct selling modes:
+
+- **Fixed Price**
+- **Make an Offer**
+
+The platform aims to provide a simple, transparent, and secure environment where users can discover products, submit offers, and complete transactions through an organized workflow.
+
+Its primary objective is to simplify second-hand commerce while providing a more efficient alternative to traditional online marketplaces.
 
 ---
 
-## 2. Vision Statement
+# 2. Vision Statement
 
-To become the leading online marketplace for structured negotiation of second-hand products, offering users a smarter, safer, and more transparent way to buy and sell.
-
----
-
-## 3. Problem Statement
-
-Current online marketplaces allow users to buy and sell second-hand products, but the negotiation process is often inefficient and poorly organized. Buyers and sellers usually negotiate through external messaging applications, making conversations difficult to track and manage.
-
-Additionally, sellers receive many unrealistic offers, while buyers have limited visibility into the negotiation process. This lack of structure reduces transparency, wastes time, and negatively impacts the overall user experience.
-
-TekhouFeha addresses these challenges by integrating negotiation directly into the platform through a structured offer and counter-offer workflow.
+To become the leading marketplace for second-hand products by offering a modern, transparent, and user-centered buying experience built around structured offers and secure interactions.
 
 ---
 
-## 4. Target Users
+# 3. Product Identity
 
-TekhouFeha is designed for the following users:
+TekhouFeha is **not a traditional marketplace**.
 
-- Visitors who want to browse available products.
-- Buyers looking for second-hand products at negotiable prices.
-- Sellers who want to publish products and negotiate with potential buyers.
-- Administrators responsible for managing users, products, reports, and platform activities.
+Its identity is based on two complementary selling modes:
+
+### Fixed Price
+
+The seller publishes a product with a fixed selling price.
+
+### Make an Offer
+
+The seller publishes a product without displaying a price.
+
+Interested users submit confidential purchase offers.
+
+The seller privately reviews all received offers and decides which one to accept.
+
+Communication between both users begins **only after** an offer has been accepted.
+
+This workflow reduces unnecessary conversations and creates a more organized buying experience.
 
 ---
 
-## 5. Value Proposition
+# 4. Problem Statement
 
-TekhouFeha differentiates itself from traditional marketplaces by making negotiation the core of the buying and selling experience.
+Current online marketplaces often suffer from several limitations:
 
-Instead of relying on external messaging applications, users can negotiate directly on the platform through a structured process that includes offers, counter-offers, negotiation history, and transaction tracking.
+- Negotiations usually take place through external messaging applications.
+- Sellers receive numerous unorganized messages.
+- Buyers often waste time negotiating without knowing whether the seller is genuinely interested.
+- There is no structured workflow for managing offers.
 
-This approach provides greater transparency, improves user trust, and creates a smoother negotiation experience for both buyers and sellers.
+TekhouFeha addresses these issues by introducing an offer-based marketplace where negotiations are organized directly within the platform.
 
 ---
 
-## 6. Product Goals
+# 5. Target Users
+
+TekhouFeha is designed for three types of users:
+
+### Visitor
+
+Can browse products, search listings, and explore the marketplace.
+
+### User
+
+A registered user who can:
+
+- Publish products
+- Buy products
+- Submit offers
+- Receive offers
+- Manage products
+- Chat after an accepted offer
+
+The same user can act as both buyer and seller.
+
+### Administrator
+
+Responsible for managing users, products, reports, and platform moderation.
+
+---
+
+# 6. Value Proposition
+
+TekhouFeha differentiates itself from traditional marketplaces through a structured offer management workflow.
+
+Instead of opening conversations immediately, buyers first submit confidential offers.
+
+The seller reviews all offers privately and decides which buyer to engage with.
+
+Only after an offer is accepted does the platform create a private conversation between both users.
+
+This approach:
+
+- Reduces unnecessary conversations.
+- Improves user experience.
+- Protects sellers from spam.
+- Encourages serious purchase offers.
+- Creates a cleaner and more organized marketplace.
+
+---
+
+# 7. Product Goals
 
 The main objectives of TekhouFeha are:
 
 - Simplify the buying and selling of second-hand products.
-- Provide a structured and transparent negotiation process.
-- Reduce time spent on unorganized negotiations.
-- Improve trust between buyers and sellers.
-- Deliver a secure and user-friendly marketplace.
-- Build a scalable platform capable of supporting future features and services.
+- Offer a structured alternative to traditional negotiations.
+- Reduce unnecessary conversations.
+- Improve trust between users.
+- Build a scalable marketplace.
+- Deliver a modern and intuitive user experience.
 
 ---
 
-## 7. Minimum Viable Product (MVP)
+# 8. Minimum Viable Product (MVP)
 
-The first version of TekhouFeha will include the following core features:
+The first version of TekhouFeha will include:
 
-- User registration and authentication.
+- User authentication.
 - User profile management.
-- Product publication and management.
-- Product browsing and search.
-- Product categories.
-- Offer submission.
-- Counter-offer management.
-- Offer acceptance or rejection.
-- Negotiation history.
+- Product publication.
+- Product browsing.
+- Product search and filtering.
+- Fixed Price products.
+- Make an Offer products.
+- Offer management.
+- Product reservation.
+- Private chat after offer acceptance.
+- Notifications.
+- Favorites.
 - User dashboard.
-
-Additional features such as real-time chat, payment integration, delivery management, AI-based price recommendations, and mobile applications will be introduced in future releases.
+- Administrator dashboard.
 
 ---
 
-## 8. Success Metrics
+# 9. Success Metrics
 
-The success of the platform will be measured using the following indicators:
+The platform will measure success using:
 
 - Number of registered users.
 - Number of published products.
-- Number of completed negotiations.
-- Negotiation success rate.
-- Average time required to complete a transaction.
-- User satisfaction and ratings.
+- Number of submitted offers.
+- Number of completed transactions.
+- Average transaction completion time.
+- User satisfaction.
 - Monthly active users.
 
 ---
 
-## 9. Out of Scope
+# 10. Out of Scope
 
 The following features are intentionally excluded from the MVP:
 
-- Online payment integration.
-- Delivery and logistics management.
-- AI-powered price estimation.
-- Personalized product recommendations.
+- Online payment.
+- Delivery management.
+- AI price estimation.
+- Product recommendation system.
+- Reputation scoring.
 - Mobile application.
-- Live auctions.
-- Multi-language support.
+- Premium subscriptions.
 - Advanced analytics.
-- Premium subscription plans.
+
+These features are planned for future versions of TekhouFeha.
+
+---
+
+# Version
+
+**Document Version:** 1.0
+
+**Status:** Approved
+
+**Project:** TekhouFeha

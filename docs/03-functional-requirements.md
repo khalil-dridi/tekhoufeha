@@ -1,8 +1,10 @@
 # Functional Requirements
 
-## 1. Introduction
+---
 
-This document defines the functional requirements of the TekhouFeha platform. It describes the system functionalities that must be implemented to satisfy the business requirements and support the product vision.
+# 1. Introduction
+
+This document defines the functional requirements of the TekhouFeha platform. It describes the system functionalities that must be implemented to satisfy the business requirements and support the Minimum Viable Product (MVP).
 
 ---
 
@@ -10,23 +12,22 @@ This document defines the functional requirements of the TekhouFeha platform. It
 
 ## FR-001 User Registration
 
-The system shall allow visitors to create a new account by providing:
+The system shall allow visitors to create a new account using:
 
-- First name
-- Last name
-- Email
+- First Name
+- Last Name
+- Email Address
 - Password
-- Phone number
 
-The system shall validate the uniqueness of the email address.
+The email address shall be unique.
 
 ---
 
 ## FR-002 User Authentication
 
-The system shall allow registered users to authenticate using their email and password.
+The system shall allow registered users to log in using their email address and password.
 
-The system shall deny access if the credentials are invalid.
+Only authenticated users shall access protected features.
 
 ---
 
@@ -35,7 +36,7 @@ The system shall deny access if the credentials are invalid.
 The system shall allow authenticated users to:
 
 - View their profile
-- Update personal information
+- Update profile information
 - Change password
 - Upload a profile picture
 
@@ -45,103 +46,171 @@ The system shall allow authenticated users to:
 
 ## FR-004 Publish Product
 
-The system shall allow sellers to publish a second-hand product.
+The system shall allow authenticated users to publish second-hand products.
 
-A product shall contain:
+Each product shall include:
 
 - Title
 - Description
 - Category
-- Condition
-- Price
+- Product Condition
 - Images
 - Location
+- Selling Mode
 
 ---
 
-## FR-005 Update Product
+## FR-005 Selling Modes
 
-The seller shall be able to edit product information before the product is sold.
+The platform shall support two selling modes:
 
----
+### Fixed Price
 
-## FR-006 Delete Product
+The seller specifies a selling price.
 
-The seller shall be able to delete an active product.
+### Make an Offer
 
----
+The seller publishes the product without displaying a selling price.
 
-## FR-007 Browse Products
-
-Visitors and buyers shall be able to browse available products.
-
-The system shall support:
-
-- Categories
-- Search
-- Filters
-- Sorting
+Interested users submit confidential purchase offers.
 
 ---
 
-# 4. Negotiation Management
+## FR-006 Product Search
 
-## FR-008 Submit Offer
+The system shall allow visitors and users to:
 
-Authenticated buyers shall be able to submit an offer for a product.
+- Browse products
+- Search by keyword
+- Filter by category
+- Filter by selling mode
+- Filter by location
 
-Each offer shall contain:
+---
+
+## FR-007 Product Update
+
+Only the product owner shall be allowed to edit product information.
+
+---
+
+## FR-008 Product Deletion
+
+Only the product owner shall be allowed to delete an available product.
+
+---
+
+# 4. Offer Management
+
+## FR-009 Submit Offer
+
+Authenticated users shall be able to submit an offer for products using the "Make an Offer" mode.
+
+Each offer shall include:
 
 - Proposed price
 - Optional message
 
 ---
 
-## FR-009 Counter Offer
+## FR-010 Offer Visibility
+
+Users shall only view their own submitted offers.
+
+Only the seller shall view all received offers.
+
+---
+
+## FR-011 Offer Decision
 
 The seller shall be able to:
 
-- Accept
-- Reject
-- Submit a counter-offer
+- Accept an offer
+- Reject an offer
+- Keep an offer pending
 
 ---
 
-## FR-010 Negotiation History
+## FR-012 Reservation
 
-The system shall store every negotiation event.
+When an offer is accepted:
 
-Each negotiation shall include:
-
-- Date
-- User
-- Offered price
-- Status
+- The product status becomes Reserved.
+- No additional offers shall be accepted.
+- A private chat shall be created.
 
 ---
 
-## FR-011 Offer Expiration
+## FR-013 Offer Cancellation
 
-Offers shall expire automatically after a configurable period.
+Users shall be able to cancel their pending offers.
+
+After cancellation, they may submit a new offer.
 
 ---
 
-# 5. Notification Management
+# 5. Fixed Price Products
 
-## FR-012 Notifications
+## FR-014 Purchase Request
+
+Users shall be able to request to purchase products listed with a fixed price.
+
+The seller must approve the request before communication begins.
+
+---
+
+# 6. Chat
+
+## FR-015 Private Chat
+
+A private chat shall be created only after:
+
+- An offer has been accepted, or
+- A purchase request has been approved.
+
+---
+
+## FR-016 Chat Features
+
+The private chat shall allow users to:
+
+- Send text messages
+- Send images
+- Share a meeting location
+- Mark the transaction as completed
+- Cancel the transaction
+
+---
+
+# 7. Notifications
+
+## FR-017 Notifications
 
 The system shall notify users when:
 
 - A new offer is received.
-- A counter-offer is received.
 - An offer is accepted.
 - An offer is rejected.
+- A purchase request is accepted.
+- A new message is received.
 
 ---
 
-# 6. Administration
+# 8. Favorites
 
-## FR-013 User Management
+## FR-018 Favorites
+
+Authenticated users shall be able to:
+
+- Add products to favorites.
+- Remove products from favorites.
+- View favorite products.
+
+---
+
+# 9. Administration
+
+## FR-019 User Management
 
 Administrators shall be able to:
 
@@ -151,56 +220,69 @@ Administrators shall be able to:
 
 ---
 
-## FR-014 Product Moderation
+## FR-020 Product Moderation
 
 Administrators shall be able to:
 
-- Remove inappropriate products
-- Hide products
+- Remove products
+- Hide inappropriate products
 - Review reported products
 
 ---
 
-# 7. Security
+# 10. Security
 
-## FR-015 Authorization
+## FR-021 Authorization
 
-The system shall enforce role-based access control.
-
-Supported roles:
+The platform shall support the following roles:
 
 - Visitor
-- Buyer
-- Seller
+- User
 - Administrator
 
 ---
 
-## FR-016 Authentication
+## FR-022 Resource Ownership
 
-Only authenticated users shall access protected resources.
+Only the owner of a product shall be allowed to modify or delete it.
 
----
-
-# 8. Reporting
-
-## FR-017 Dashboard
-
-Authenticated users shall have access to a dashboard showing:
-
-- Published products
-- Active negotiations
-- Sold products
-- Purchased products
+Only the owner of an offer shall be allowed to cancel it.
 
 ---
 
-# 9. Future Functionalities
+# 11. Dashboard
+
+## FR-023 User Dashboard
+
+Authenticated users shall access a dashboard containing:
+
+- My Products
+- My Offers
+- My Purchase Requests
+- Favorite Products
+- Notifications
+- Active Chats
+
+---
+
+# 12. Future Functionalities
 
 The following functionalities are excluded from the MVP:
 
+- AI price estimation
+- Recommendation system
 - Online payment
-- AI price recommendation
-- Mobile application
 - Delivery management
-- Live chat
+- Reputation system
+- Mobile application
+- Premium subscription
+
+---
+
+# Version
+
+**Document Version:** 1.0
+
+**Status:** Approved
+
+**Project:** TekhouFeha
