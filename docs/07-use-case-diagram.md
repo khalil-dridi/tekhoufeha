@@ -4,7 +4,8 @@
 
 The following diagram presents the global use case diagram of the TekhouFeha platform.
 
-![alt text](UseCaseDiagramGlobale.png)
+
+![alt text](global_use_case_diagram.jpg)
 
 ---
 
