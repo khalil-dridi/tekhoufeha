@@ -68,4 +68,16 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(status).body(error);
     }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ApiErrorResponse> handleInvalidCredentialsException(
+            InvalidCredentialsException exception,
+            HttpServletRequest request) {
+
+        return buildErrorResponse(
+                HttpStatus.UNAUTHORIZED,
+                exception.getMessage(),
+                request
+        );
+    }
 }

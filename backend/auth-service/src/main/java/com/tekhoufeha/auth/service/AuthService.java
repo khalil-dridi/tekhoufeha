@@ -1,9 +1,12 @@
 package com.tekhoufeha.auth.service;
 
+import com.tekhoufeha.auth.dto.request.LoginRequest;
 import com.tekhoufeha.auth.dto.request.RegisterRequest;
+import com.tekhoufeha.auth.dto.response.LoginResponse;
 import com.tekhoufeha.auth.dto.response.RegisterResponse;
 import com.tekhoufeha.auth.entity.AuthUser;
 import com.tekhoufeha.auth.exception.EmailAlreadyExistsException;
+import com.tekhoufeha.auth.exception.InvalidCredentialsException;
 import com.tekhoufeha.auth.exception.PasswordMismatchException;
 import com.tekhoufeha.auth.mapper.AuthMapper;
 import com.tekhoufeha.auth.repository.AuthUserRepository;
@@ -38,5 +41,19 @@ public class AuthService {
         authUserRepository.save(authUser);
 
         return new RegisterResponse("Registration successful.");
+    }
+
+
+    @Transactional(readOnly = true)
+    public LoginResponse login(LoginRequest request) {
+
+        AuthUser authUser = authUserRepository.findByEmail(request.email())
+                .orElseThrow(() -> new InvalidCredentialsException("Invalid email or password."));
+
+        if (!passwordEncoder.matches(request.password(), authUser.getPassword())) {
+            throw new InvalidCredentialsException("Invalid email or password.");
+        }
+
+        return new LoginResponse("Login successful.");
     }
 }

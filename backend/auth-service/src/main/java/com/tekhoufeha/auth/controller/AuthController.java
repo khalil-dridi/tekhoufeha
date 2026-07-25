@@ -1,6 +1,8 @@
 package com.tekhoufeha.auth.controller;
 
+import com.tekhoufeha.auth.dto.request.LoginRequest;
 import com.tekhoufeha.auth.dto.request.RegisterRequest;
+import com.tekhoufeha.auth.dto.response.LoginResponse;
 import com.tekhoufeha.auth.dto.response.RegisterResponse;
 import com.tekhoufeha.auth.service.AuthService;
 import jakarta.validation.Valid;
@@ -25,6 +27,15 @@ public class AuthController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(response);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(
+            @Valid @RequestBody LoginRequest request) {
+
+        LoginResponse response = authService.login(request);
+
+        return ResponseEntity.ok(response);
     }
 
 }
