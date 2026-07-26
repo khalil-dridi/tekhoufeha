@@ -3,7 +3,7 @@ package com.tekhoufeha.auth.dto.response;
 import lombok.Builder;
 
 @Builder
-public record LoginResponse(
+public record RefreshTokenResponse(
 
         String accessToken,
         String refreshToken,

@@ -1,10 +1,13 @@
 package com.tekhoufeha.auth.service;
 
 import com.tekhoufeha.auth.dto.request.LoginRequest;
+import com.tekhoufeha.auth.dto.request.RefreshTokenRequest;
 import com.tekhoufeha.auth.dto.request.RegisterRequest;
 import com.tekhoufeha.auth.dto.response.LoginResponse;
+import com.tekhoufeha.auth.dto.response.RefreshTokenResponse;
 import com.tekhoufeha.auth.dto.response.RegisterResponse;
 import com.tekhoufeha.auth.entity.AuthUser;
+import com.tekhoufeha.auth.entity.RefreshToken;
 import com.tekhoufeha.auth.exception.EmailAlreadyExistsException;
 import com.tekhoufeha.auth.exception.InvalidCredentialsException;
 import com.tekhoufeha.auth.exception.PasswordMismatchException;
@@ -18,14 +21,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class AuthService {
 
     private final AuthUserRepository authUserRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthMapper authMapper;
     private final JwtService jwtService;
+    private final RefreshTokenService refreshTokenService;
 
-    @Transactional
+
     public RegisterResponse register(RegisterRequest request) {
 
         if (authUserRepository.existsByEmail(request.email())) {
@@ -46,20 +51,47 @@ public class AuthService {
     }
 
 
-    @Transactional(readOnly = true)
     public LoginResponse login(LoginRequest request) {
 
         AuthUser authUser = authUserRepository.findByEmail(request.email())
-                .orElseThrow(() -> new InvalidCredentialsException("Invalid email or password."));
+                .orElseThrow(() ->
+                        new InvalidCredentialsException("Invalid email or password."));
 
         if (!passwordEncoder.matches(request.password(), authUser.getPassword())) {
             throw new InvalidCredentialsException("Invalid email or password.");
         }
 
-        String token = jwtService.generateToken(authUser);
+        String accessToken = jwtService.generateToken(authUser);
 
-        return new LoginResponse(
-                token,
-                "Bearer");
+        RefreshToken refreshToken =
+                refreshTokenService.createRefreshToken(authUser);
+
+        return LoginResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken.getToken())
+                .tokenType("Bearer")
+                .build();
+    }
+
+
+    public RefreshTokenResponse refreshToken(RefreshTokenRequest request) {
+
+        RefreshToken refreshToken = refreshTokenService
+                .findByToken(request.refreshToken())
+                .orElseThrow(() ->
+                        new InvalidCredentialsException("Refresh token not found."));
+
+        refreshTokenService.verifyExpiration(refreshToken);
+
+        AuthUser authUser = refreshToken.getAuthUser();
+
+        String newAccessToken =
+                jwtService.generateToken(authUser);
+
+        return RefreshTokenResponse.builder()
+                .accessToken(newAccessToken)
+                .refreshToken(refreshToken.getToken())
+                .tokenType("Bearer")
+                .build();
     }
 }
