@@ -10,6 +10,7 @@ import com.tekhoufeha.auth.exception.InvalidCredentialsException;
 import com.tekhoufeha.auth.exception.PasswordMismatchException;
 import com.tekhoufeha.auth.mapper.AuthMapper;
 import com.tekhoufeha.auth.repository.AuthUserRepository;
+import com.tekhoufeha.auth.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class AuthService {
     private final AuthUserRepository authUserRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthMapper authMapper;
+    private final JwtService jwtService;
 
     @Transactional
     public RegisterResponse register(RegisterRequest request) {
@@ -54,6 +56,10 @@ public class AuthService {
             throw new InvalidCredentialsException("Invalid email or password.");
         }
 
-        return new LoginResponse("Login successful.");
+        String token = jwtService.generateToken(authUser);
+
+        return new LoginResponse(
+                token,
+                "Bearer");
     }
 }
