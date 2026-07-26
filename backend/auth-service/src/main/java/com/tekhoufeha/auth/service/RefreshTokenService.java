@@ -55,6 +55,16 @@ public class RefreshTokenService {
     }
 
 
+    public RefreshToken rotateRefreshToken(RefreshToken oldRefreshToken) {
+
+        AuthUser authUser = oldRefreshToken.getAuthUser();
+
+        refreshTokenRepository.delete(oldRefreshToken);
+
+        return createRefreshToken(authUser);
+    }
+
+
     public void delete(RefreshToken refreshToken) {
 
         refreshTokenRepository.delete(refreshToken);

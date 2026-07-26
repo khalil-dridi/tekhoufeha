@@ -77,21 +77,26 @@ public class AuthService {
 
     public RefreshTokenResponse refreshToken(RefreshTokenRequest request) {
 
-        RefreshToken refreshToken = refreshTokenService
+        RefreshToken oldRefreshToken = refreshTokenService
                 .findByToken(request.refreshToken())
                 .orElseThrow(() ->
                         new RefreshTokenException("Refresh token not found."));
 
-        refreshTokenService.verifyExpiration(refreshToken);
+        refreshTokenService.verifyExpiration(oldRefreshToken);
 
-        AuthUser authUser = refreshToken.getAuthUser();
+        AuthUser authUser = oldRefreshToken.getAuthUser();
 
         String newAccessToken =
                 jwtService.generateToken(authUser);
 
+
+        RefreshToken newRefreshToken =
+                refreshTokenService.rotateRefreshToken(oldRefreshToken);
+
+
         return RefreshTokenResponse.builder()
                 .accessToken(newAccessToken)
-                .refreshToken(refreshToken.getToken())
+                .refreshToken(newRefreshToken.getToken())
                 .tokenType("Bearer")
                 .build();
     }
