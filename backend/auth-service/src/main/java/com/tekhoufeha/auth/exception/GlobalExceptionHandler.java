@@ -25,6 +25,7 @@ public class GlobalExceptionHandler {
         );
     }
 
+
     @ExceptionHandler(PasswordMismatchException.class)
     public ResponseEntity<ApiErrorResponse> handlePasswordMismatchException(
             PasswordMismatchException exception,
@@ -37,14 +38,44 @@ public class GlobalExceptionHandler {
         );
     }
 
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ApiErrorResponse> handleInvalidCredentialsException(
+            InvalidCredentialsException exception,
+            HttpServletRequest request) {
+
+        return buildErrorResponse(
+                HttpStatus.UNAUTHORIZED,
+                exception.getMessage(),
+                request
+        );
+    }
+
+
+    @ExceptionHandler(RefreshTokenException.class)
+    public ResponseEntity<ApiErrorResponse> handleRefreshTokenException(
+            RefreshTokenException exception,
+            HttpServletRequest request) {
+
+        return buildErrorResponse(
+                HttpStatus.UNAUTHORIZED,
+                exception.getMessage(),
+                request
+        );
+    }
+
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiErrorResponse> handleValidationException(
             MethodArgumentNotValidException exception,
             HttpServletRequest request) {
 
         String message = exception.getBindingResult()
-                .getFieldError()
-                .getDefaultMessage();
+                .getFieldErrors()
+                .stream()
+                .findFirst()
+                .map(error -> error.getDefaultMessage())
+                .orElse("Validation error.");
 
         return buildErrorResponse(
                 HttpStatus.BAD_REQUEST,
@@ -52,6 +83,20 @@ public class GlobalExceptionHandler {
                 request
         );
     }
+
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiErrorResponse> handleGlobalException(
+            Exception exception,
+            HttpServletRequest request) {
+
+        return buildErrorResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "An unexpected error occurred.",
+                request
+        );
+    }
+
 
     private ResponseEntity<ApiErrorResponse> buildErrorResponse(
             HttpStatus status,
@@ -66,18 +111,8 @@ public class GlobalExceptionHandler {
                 request.getRequestURI()
         );
 
-        return ResponseEntity.status(status).body(error);
-    }
-
-    @ExceptionHandler(InvalidCredentialsException.class)
-    public ResponseEntity<ApiErrorResponse> handleInvalidCredentialsException(
-            InvalidCredentialsException exception,
-            HttpServletRequest request) {
-
-        return buildErrorResponse(
-                HttpStatus.UNAUTHORIZED,
-                exception.getMessage(),
-                request
-        );
+        return ResponseEntity
+                .status(status)
+                .body(error);
     }
 }

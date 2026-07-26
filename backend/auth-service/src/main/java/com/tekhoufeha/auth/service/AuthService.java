@@ -11,6 +11,7 @@ import com.tekhoufeha.auth.entity.RefreshToken;
 import com.tekhoufeha.auth.exception.EmailAlreadyExistsException;
 import com.tekhoufeha.auth.exception.InvalidCredentialsException;
 import com.tekhoufeha.auth.exception.PasswordMismatchException;
+import com.tekhoufeha.auth.exception.RefreshTokenException;
 import com.tekhoufeha.auth.mapper.AuthMapper;
 import com.tekhoufeha.auth.repository.AuthUserRepository;
 import com.tekhoufeha.auth.security.JwtService;
@@ -79,7 +80,7 @@ public class AuthService {
         RefreshToken refreshToken = refreshTokenService
                 .findByToken(request.refreshToken())
                 .orElseThrow(() ->
-                        new InvalidCredentialsException("Refresh token not found."));
+                        new RefreshTokenException("Refresh token not found."));
 
         refreshTokenService.verifyExpiration(refreshToken);
 
@@ -93,5 +94,16 @@ public class AuthService {
                 .refreshToken(refreshToken.getToken())
                 .tokenType("Bearer")
                 .build();
+    }
+
+
+    public void logout(RefreshTokenRequest request) {
+
+        RefreshToken refreshToken = refreshTokenService
+                .findByToken(request.refreshToken())
+                .orElseThrow(() ->
+                        new RefreshTokenException("Refresh token not found."));
+
+        refreshTokenService.delete(refreshToken);
     }
 }

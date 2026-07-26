@@ -2,7 +2,7 @@ package com.tekhoufeha.auth.service;
 
 import com.tekhoufeha.auth.entity.AuthUser;
 import com.tekhoufeha.auth.entity.RefreshToken;
-import com.tekhoufeha.auth.exception.InvalidCredentialsException;
+import com.tekhoufeha.auth.exception.RefreshTokenException;
 import com.tekhoufeha.auth.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,7 +46,7 @@ public class RefreshTokenService {
 
             refreshTokenRepository.delete(refreshToken);
 
-            throw new InvalidCredentialsException(
+            throw new RefreshTokenException(
                     "Refresh token has expired."
             );
         }
@@ -55,7 +55,14 @@ public class RefreshTokenService {
     }
 
 
+    public void delete(RefreshToken refreshToken) {
+
+        refreshTokenRepository.delete(refreshToken);
+    }
+
+
     public void deleteByUserId(UUID userId) {
+
         refreshTokenRepository.deleteAllByAuthUser_Id(userId);
     }
 }
