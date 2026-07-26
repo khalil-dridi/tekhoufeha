@@ -4,6 +4,7 @@ import com.tekhoufeha.auth.dto.request.LoginRequest;
 import com.tekhoufeha.auth.dto.request.RegisterRequest;
 import com.tekhoufeha.auth.dto.response.LoginResponse;
 import com.tekhoufeha.auth.dto.response.RegisterResponse;
+import com.tekhoufeha.auth.entity.AuthUser;
 import com.tekhoufeha.auth.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class AuthController {
                 .status(HttpStatus.CREATED)
                 .body(response);
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(
