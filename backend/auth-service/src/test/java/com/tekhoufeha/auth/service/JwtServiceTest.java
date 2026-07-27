@@ -1,9 +1,11 @@
-package com.tekhoufeha.auth.security;
+package com.tekhoufeha.auth.service;
+
 
 import com.tekhoufeha.auth.entity.AuthUser;
 import com.tekhoufeha.auth.entity.Role;
 import com.tekhoufeha.auth.entity.UserStatus;
 
+import com.tekhoufeha.auth.security.JwtService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -173,6 +175,7 @@ class JwtServiceTest {
 
 
     private AuthUser createUser() {
+
         return AuthUser.builder()
                 .email("test@test.com")
                 .password("encodedPassword")
