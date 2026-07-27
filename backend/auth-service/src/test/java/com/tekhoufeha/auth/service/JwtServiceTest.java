@@ -173,7 +173,6 @@ class JwtServiceTest {
 
 
     private AuthUser createUser() {
-
         return AuthUser.builder()
                 .email("test@test.com")
                 .password("encodedPassword")
