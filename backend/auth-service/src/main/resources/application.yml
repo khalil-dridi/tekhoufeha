@@ -2,6 +2,18 @@ spring:
   application:
     name: auth-service
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: khalildridi859@gmail.com
+    password: kspf lety dfzx vlfn
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
   datasource:
     url: jdbc:mysql://localhost:3306/tekhoufeha_auth_db
     username: root
@@ -20,12 +32,15 @@ spring:
     enabled: true
     locations: classpath:db/migration
 
+
 email-verification:
   expiration: 86400000
+
 
 jwt:
   secret: 4f6c8d0e5a1b9c7d3e2f8a6b1c9d4e7f5a8b2c6d9e1f3a7b4c8d0e5f1a9b3c7
   expiration: 86400000
+
 
 refresh-token:
   expiration: 604800000

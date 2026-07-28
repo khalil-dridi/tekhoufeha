@@ -2,15 +2,16 @@ package com.tekhoufeha.auth.service;
 
 import com.tekhoufeha.auth.entity.AuthUser;
 import com.tekhoufeha.auth.entity.EmailVerificationToken;
-import com.tekhoufeha.auth.exception.RefreshTokenException;
+import com.tekhoufeha.auth.entity.UserStatus;
 import com.tekhoufeha.auth.repository.EmailVerificationTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import com.tekhoufeha.auth.entity.UserStatus;
+
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
+
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +19,7 @@ public class EmailVerificationService {
 
 
     private final EmailVerificationTokenRepository emailVerificationTokenRepository;
+    private final EmailService emailService;
 
 
     @Value("${email-verification.expiration}")
@@ -38,7 +40,17 @@ public class EmailVerificationService {
                         .build();
 
 
-        return emailVerificationTokenRepository.save(token);
+        EmailVerificationToken savedToken =
+                emailVerificationTokenRepository.save(token);
+
+
+        emailService.sendVerificationEmail(
+                authUser.getEmail(),
+                savedToken.getToken()
+        );
+
+
+        return savedToken;
     }
 
 
@@ -72,32 +84,40 @@ public class EmailVerificationService {
 
 
 
-    public void delete(EmailVerificationToken token) {
-
-        emailVerificationTokenRepository.delete(token);
-    }
-
     public AuthUser verifyEmail(String token) {
+
 
         EmailVerificationToken verificationToken =
                 emailVerificationTokenRepository.findByToken(token)
                         .orElseThrow(() ->
-                                new  RefreshTokenException("Invalid verification token.")
+                                new RuntimeException(
+                                        "Invalid verification token."
+                                )
                         );
 
 
         verifyExpiration(verificationToken);
 
 
-        AuthUser authUser = verificationToken.getAuthUser();
+        AuthUser authUser =
+                verificationToken.getAuthUser();
 
 
         authUser.setStatus(UserStatus.ACTIVE);
 
 
-        emailVerificationTokenRepository.delete(verificationToken);
+        emailVerificationTokenRepository.delete(
+                verificationToken
+        );
 
 
         return authUser;
+    }
+
+
+
+    public void delete(EmailVerificationToken token) {
+
+        emailVerificationTokenRepository.delete(token);
     }
 }

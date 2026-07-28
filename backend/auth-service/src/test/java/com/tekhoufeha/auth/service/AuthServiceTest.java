@@ -440,6 +440,32 @@ class AuthServiceTest {
     }
 
 
+    @Test
+    void login_should_fail_when_email_is_not_verified() {
+
+        LoginRequest request =
+                new LoginRequest(
+                        "test@test.com",
+                        "password123"
+                );
+
+        AuthUser user = createUser();
+        user.setStatus(UserStatus.PENDING);
+
+
+        when(authUserRepository.findByEmail(request.email()))
+                .thenReturn(Optional.of(user));
+
+
+        assertThatThrownBy(() ->
+                authService.login(request)
+        )
+                .isInstanceOf(InvalidCredentialsException.class);
+
+
+        verify(passwordEncoder, never())
+                .matches(any(), any());
+    }
 
 
     private AuthUser createUser() {
@@ -451,5 +477,6 @@ class AuthServiceTest {
                 .status(UserStatus.ACTIVE)
                 .build();
     }
+
 
 }
