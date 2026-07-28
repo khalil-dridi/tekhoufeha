@@ -4,6 +4,7 @@ import com.tekhoufeha.auth.security.CustomUserDetailsService;
 import com.tekhoufeha.auth.security.JwtAuthenticationEntryPoint;
 import com.tekhoufeha.auth.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,6 +29,14 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+    @Bean
+    CommandLineRunner generatePassword(PasswordEncoder passwordEncoder) {
+        return args -> {
+            System.out.println("=======================================");
+            System.out.println(passwordEncoder.encode("admin123"));
+            System.out.println("=======================================");
+        };
     }
 
     @Bean
