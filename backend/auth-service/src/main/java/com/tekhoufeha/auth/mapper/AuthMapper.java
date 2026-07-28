@@ -15,7 +15,7 @@ public class AuthMapper {
                 .email(request.email())
                 .password(encodedPassword)
                 .role(Role.USER)
-                .status(UserStatus.ACTIVE)
+                .status(UserStatus.PENDING)
                 .build();
     }
 

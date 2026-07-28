@@ -17,7 +17,7 @@ import com.tekhoufeha.auth.repository.AuthUserRepository;
 import com.tekhoufeha.auth.security.JwtService;
 import com.tekhoufeha.auth.dto.request.RegisterRequest;
 import com.tekhoufeha.auth.dto.response.RegisterResponse;
-
+import com.tekhoufeha.auth.service.EmailVerificationService;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,6 +55,8 @@ class AuthServiceTest {
     @Mock
     private RefreshTokenService refreshTokenService;
 
+    @Mock
+    private EmailVerificationService emailVerificationService;
 
     @InjectMocks
     private AuthService authService;
@@ -362,11 +364,15 @@ class AuthServiceTest {
 
 
         assertThat(response.message())
-                .isEqualTo("Registration successful.");
+                .isEqualTo(
+                        "Registration successful. Please verify your email."
+                );
 
 
         verify(authUserRepository)
                 .save(user);
+        verify(emailVerificationService)
+                .createToken(user);
     }
 
 

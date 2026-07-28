@@ -1,7 +1,10 @@
 package com.tekhoufeha.auth.entity;
 
 public enum UserStatus {
+
+    PENDING,
     ACTIVE,
-    INACTIVE,
-    SUSPENDED
+    SUSPENDED,
+    INACTIVE
+
 }

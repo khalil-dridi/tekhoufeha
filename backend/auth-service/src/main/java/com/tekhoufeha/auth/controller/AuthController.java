@@ -50,6 +50,17 @@ public class AuthController {
         );
     }
 
+    @GetMapping("/verify-email")
+    public ResponseEntity<String> verifyEmail(
+            @RequestParam String token) {
+
+        authService.verifyEmail(token);
+
+        return ResponseEntity.ok(
+                "Email verified successfully."
+        );
+    }
+
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(

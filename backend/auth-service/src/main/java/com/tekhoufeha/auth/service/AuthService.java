@@ -15,6 +15,8 @@ import com.tekhoufeha.auth.exception.RefreshTokenException;
 import com.tekhoufeha.auth.mapper.AuthMapper;
 import com.tekhoufeha.auth.repository.AuthUserRepository;
 import com.tekhoufeha.auth.security.JwtService;
+import com.tekhoufeha.auth.entity.UserStatus;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,7 +32,7 @@ public class AuthService {
     private final AuthMapper authMapper;
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
-
+    private final EmailVerificationService emailVerificationService;
 
     public RegisterResponse register(RegisterRequest request) {
 
@@ -48,7 +50,11 @@ public class AuthService {
 
         authUserRepository.save(authUser);
 
-        return new RegisterResponse("Registration successful.");
+        emailVerificationService.createToken(authUser);
+
+        return new RegisterResponse(
+                "Registration successful. Please verify your email."
+        );
     }
 
 
@@ -58,14 +64,31 @@ public class AuthService {
                 .orElseThrow(() ->
                         new InvalidCredentialsException("Invalid email or password."));
 
-        if (!passwordEncoder.matches(request.password(), authUser.getPassword())) {
-            throw new InvalidCredentialsException("Invalid email or password.");
+
+        if (authUser.getStatus() != UserStatus.ACTIVE) {
+
+            throw new InvalidCredentialsException(
+                    "Please verify your email before login."
+            );
         }
+
+
+        if (!passwordEncoder.matches(
+                request.password(),
+                authUser.getPassword())) {
+
+            throw new InvalidCredentialsException(
+                    "Invalid email or password."
+            );
+        }
+
 
         String accessToken = jwtService.generateToken(authUser);
 
+
         RefreshToken refreshToken =
                 refreshTokenService.createRefreshToken(authUser);
+
 
         return LoginResponse.builder()
                 .accessToken(accessToken)
@@ -102,6 +125,15 @@ public class AuthService {
     }
 
 
+    public void verifyEmail(String token) {
+
+        AuthUser authUser =
+                emailVerificationService.verifyEmail(token);
+
+        authUserRepository.save(authUser);
+    }
+
+
     public void logout(RefreshTokenRequest request) {
 
         RefreshToken refreshToken = refreshTokenService
@@ -111,4 +143,6 @@ public class AuthService {
 
         refreshTokenService.delete(refreshToken);
     }
+
+
 }
