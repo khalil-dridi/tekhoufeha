@@ -23,6 +23,11 @@ spring:
         format_sql: true
 
 
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+
 
 eureka:
   client:
@@ -38,3 +43,8 @@ management:
     web:
       exposure:
         include: health,info
+
+
+
+app:
+  default-avatar-url: https://tekhoufeha.com/default-avatar.png
