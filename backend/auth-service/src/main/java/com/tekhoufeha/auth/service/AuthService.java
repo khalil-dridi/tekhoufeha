@@ -25,6 +25,9 @@ import com.tekhoufeha.auth.mapper.AuthMapper;
 import com.tekhoufeha.auth.repository.AuthUserRepository;
 import com.tekhoufeha.auth.security.JwtService;
 
+import com.tekhoufeha.auth.dto.request.ChangePasswordRequest;
+import com.tekhoufeha.auth.entity.AuthProvider;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.core.Authentication;
@@ -285,6 +288,82 @@ public class AuthService {
                 authUser.getRole(),
                 authUser.getStatus(),
                 authUser.getProvider()
+        );
+    }
+
+
+    public void changePassword(
+            ChangePasswordRequest request,
+            Authentication authentication) {
+
+
+        String email = authentication.getName();
+
+
+        AuthUser authUser =
+                authUserRepository.findByEmail(email)
+                        .orElseThrow(() ->
+                                new InvalidCredentialsException(
+                                        "User not found."
+                                ));
+
+
+
+
+        // Les comptes Google n'ont pas de password
+        if (authUser.getProvider() == AuthProvider.GOOGLE) {
+
+            throw new InvalidCredentialsException(
+                    "Google users cannot change password."
+            );
+        }
+
+
+
+
+        // Vérifier l'ancien mot de passe
+        if (!passwordEncoder.matches(
+                request.currentPassword(),
+                authUser.getPassword())) {
+
+
+            throw new InvalidCredentialsException(
+                    "Current password is incorrect."
+            );
+        }
+
+
+
+
+        // Vérifier confirmation
+        if (!request.newPassword()
+                .equals(request.confirmPassword())) {
+
+
+            throw new PasswordMismatchException(
+                    "Passwords do not match."
+            );
+        }
+
+
+
+
+        // Encoder nouveau password
+        authUser.setPassword(
+                passwordEncoder.encode(
+                        request.newPassword()
+                )
+        );
+
+
+        authUserRepository.save(authUser);
+
+
+
+        // Sécurité :
+        // invalider toutes les sessions existantes
+        refreshTokenService.deleteByUserId(
+                authUser.getId()
         );
     }
 

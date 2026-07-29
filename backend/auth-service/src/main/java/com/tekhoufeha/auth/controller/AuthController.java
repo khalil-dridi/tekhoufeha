@@ -1,8 +1,7 @@
 package com.tekhoufeha.auth.controller;
 
-import com.tekhoufeha.auth.dto.request.LoginRequest;
-import com.tekhoufeha.auth.dto.request.RefreshTokenRequest;
-import com.tekhoufeha.auth.dto.request.RegisterRequest;
+import com.tekhoufeha.auth.dto.request.*;
+import com.tekhoufeha.auth.dto.request.ResetPasswordRequest;
 import com.tekhoufeha.auth.dto.response.LoginResponse;
 import com.tekhoufeha.auth.dto.response.RefreshTokenResponse;
 import com.tekhoufeha.auth.dto.response.RegisterResponse;
@@ -14,8 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import com.tekhoufeha.auth.dto.request.ForgotPasswordRequest;
-import com.tekhoufeha.auth.dto.request.ResetPasswordRequest;
 
 
 @RestController
@@ -98,6 +95,24 @@ public class AuthController {
 
         return ResponseEntity.ok(
                 authService.getCurrentUser(authentication)
+        );
+    }
+
+
+    @PutMapping("/change-password")
+    public ResponseEntity<String> changePassword(
+            @Valid @RequestBody ChangePasswordRequest request,
+            Authentication authentication) {
+
+
+        authService.changePassword(
+                request,
+                authentication
+        );
+
+
+        return ResponseEntity.ok(
+                "Password changed successfully."
         );
     }
 
