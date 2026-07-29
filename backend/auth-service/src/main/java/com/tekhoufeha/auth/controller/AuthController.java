@@ -6,11 +6,13 @@ import com.tekhoufeha.auth.dto.request.RegisterRequest;
 import com.tekhoufeha.auth.dto.response.LoginResponse;
 import com.tekhoufeha.auth.dto.response.RefreshTokenResponse;
 import com.tekhoufeha.auth.dto.response.RegisterResponse;
+import com.tekhoufeha.auth.dto.response.UserProfileResponse;
 import com.tekhoufeha.auth.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import com.tekhoufeha.auth.dto.request.ForgotPasswordRequest;
 import com.tekhoufeha.auth.dto.request.ResetPasswordRequest;
@@ -86,6 +88,16 @@ public class AuthController {
 
         return ResponseEntity.ok(
                 "Password reset successfully."
+        );
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserProfileResponse> getCurrentUser(
+            Authentication authentication) {
+
+
+        return ResponseEntity.ok(
+                authService.getCurrentUser(authentication)
         );
     }
 

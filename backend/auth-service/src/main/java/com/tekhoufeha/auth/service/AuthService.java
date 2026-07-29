@@ -10,6 +10,7 @@ import com.tekhoufeha.auth.dto.response.LoginResponse;
 import com.tekhoufeha.auth.dto.response.RefreshTokenResponse;
 import com.tekhoufeha.auth.dto.response.RegisterResponse;
 
+import com.tekhoufeha.auth.dto.response.UserProfileResponse;
 import com.tekhoufeha.auth.entity.AuthUser;
 import com.tekhoufeha.auth.entity.PasswordResetToken;
 import com.tekhoufeha.auth.entity.RefreshToken;
@@ -26,6 +27,7 @@ import com.tekhoufeha.auth.security.JwtService;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -258,6 +260,31 @@ public class AuthService {
 
         passwordResetService.delete(
                 resetToken
+        );
+    }
+
+
+
+    public UserProfileResponse getCurrentUser(Authentication authentication) {
+
+
+        String email = authentication.getName();
+
+
+        AuthUser authUser =
+                authUserRepository.findByEmail(email)
+                        .orElseThrow(() ->
+                                new InvalidCredentialsException(
+                                        "User not found."
+                                ));
+
+
+        return new UserProfileResponse(
+                authUser.getId(),
+                authUser.getEmail(),
+                authUser.getRole(),
+                authUser.getStatus(),
+                authUser.getProvider()
         );
     }
 

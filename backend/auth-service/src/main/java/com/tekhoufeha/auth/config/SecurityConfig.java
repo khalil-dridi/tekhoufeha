@@ -92,12 +92,27 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
+                        // Routes publiques
                         .requestMatchers(
-                                "/api/auth/**",
+                                "/api/auth/register",
+                                "/api/auth/login",
+                                "/api/auth/refresh-token",
+                                "/api/auth/verify-email",
+                                "/api/auth/forgot-password",
+                                "/api/auth/reset-password",
                                 "/oauth2/**",
                                 "/login/**"
                         )
                         .permitAll()
+
+
+                        // Routes protégées
+                        .requestMatchers(
+                                "/api/auth/me",
+                                "/api/auth/change-password"
+                        )
+                        .authenticated()
+
 
                         .anyRequest()
                         .authenticated()
