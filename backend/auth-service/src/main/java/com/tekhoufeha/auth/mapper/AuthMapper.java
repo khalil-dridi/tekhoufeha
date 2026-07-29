@@ -1,6 +1,7 @@
 package com.tekhoufeha.auth.mapper;
 
 import com.tekhoufeha.auth.dto.request.RegisterRequest;
+import com.tekhoufeha.auth.entity.AuthProvider;
 import com.tekhoufeha.auth.entity.AuthUser;
 import com.tekhoufeha.auth.entity.Role;
 import com.tekhoufeha.auth.entity.UserStatus;
@@ -16,6 +17,7 @@ public class AuthMapper {
                 .password(encodedPassword)
                 .role(Role.USER)
                 .status(UserStatus.PENDING)
+                .provider(AuthProvider.LOCAL)
                 .build();
     }
 

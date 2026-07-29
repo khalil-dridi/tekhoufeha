@@ -35,10 +35,10 @@ public class AuthUser {
 
     /**
      * BCrypt hashed password.
-     * Never store a plain text password.
+     * Required only for LOCAL authentication.
+     * Null for OAuth2 providers (Google, Facebook...).
      */
-    @NotBlank(message = "Password is required")
-    @Column(nullable = false, length = 255)
+    @Column(length = 255)
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -48,6 +48,10 @@ public class AuthUser {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
     private UserStatus status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AuthProvider provider;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

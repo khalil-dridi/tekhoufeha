@@ -1,0 +1,2 @@
+ALTER TABLE auth_users
+    MODIFY COLUMN password VARCHAR(255) NULL;

@@ -1,0 +1,2 @@
+ALTER TABLE auth_users
+    ADD COLUMN provider VARCHAR(50) NOT NULL DEFAULT 'LOCAL';
