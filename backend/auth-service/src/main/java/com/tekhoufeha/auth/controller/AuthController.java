@@ -12,6 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.tekhoufeha.auth.dto.request.ForgotPasswordRequest;
+import com.tekhoufeha.auth.dto.request.ResetPasswordRequest;
+
 
 @RestController
 @RequestMapping("/api/auth")
@@ -58,6 +61,31 @@ public class AuthController {
 
         return ResponseEntity.ok(
                 "Email verified successfully."
+        );
+    }
+
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(
+            @Valid @RequestBody ForgotPasswordRequest request) {
+
+        authService.forgotPassword(request);
+
+        return ResponseEntity.ok(
+                "If the email exists, a password reset link has been sent."
+        );
+    }
+
+
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(
+            @Valid @RequestBody ResetPasswordRequest request) {
+
+        authService.resetPassword(request);
+
+        return ResponseEntity.ok(
+                "Password reset successfully."
         );
     }
 

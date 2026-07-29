@@ -43,4 +43,37 @@ public class EmailService {
 
         mailSender.send(message);
     }
+
+
+
+
+    public void sendPasswordResetEmail(
+            String email,
+            String token) {
+
+
+        String resetUrl =
+                "http://localhost:8081/api/auth/reset-password?token="
+                        + token;
+
+
+        SimpleMailMessage message =
+                new SimpleMailMessage();
+
+
+        message.setTo(email);
+        message.setSubject("Reset your TekhouFeha password");
+
+
+        message.setText(
+                "Hello,\n\n"
+                        + "You requested a password reset.\n\n"
+                        + "Click this link to reset your password:\n"
+                        + resetUrl
+                        + "\n\nThis link expires in 1 hour."
+        );
+
+
+        mailSender.send(message);
+    }
 }

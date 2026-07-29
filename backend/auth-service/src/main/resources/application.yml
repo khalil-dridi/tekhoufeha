@@ -35,6 +35,8 @@ spring:
 
 email-verification:
   expiration: 86400000
+password-reset:
+  expiration: 3600000
 
 
 jwt:
