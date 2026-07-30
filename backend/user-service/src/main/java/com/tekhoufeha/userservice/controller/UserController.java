@@ -11,7 +11,8 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.http.MediaType;
+import org.springframework.web.multipart.MultipartFile;
 import java.util.UUID;
 
 
@@ -69,6 +70,40 @@ public class UserController {
                         authUserId,
                         request
                 )
+        );
+    }
+
+
+
+
+    @PostMapping(
+            value = "/me/avatar",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    public ResponseEntity<UserProfileResponse> updateAvatar(
+            @RequestHeader("X-User-Id") UUID authUserId,
+            @RequestParam("file") MultipartFile file
+    ) {
+
+
+        return ResponseEntity.ok(
+                userProfileService.updateAvatar(
+                        authUserId,
+                        file
+                )
+        );
+    }
+
+
+
+    @DeleteMapping("/me/avatar")
+    public ResponseEntity<UserProfileResponse> removeAvatar(
+            @RequestHeader("X-User-Id") UUID authUserId
+    ) {
+
+
+        return ResponseEntity.ok(
+                userProfileService.removeAvatar(authUserId)
         );
     }
 

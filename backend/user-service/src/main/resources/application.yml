@@ -28,6 +28,12 @@ spring:
     locations: classpath:db/migration
 
 
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+
+
 
 eureka:
   client:
@@ -48,3 +54,10 @@ management:
 
 app:
   default-avatar-url: https://tekhoufeha.com/default-avatar.png
+
+
+
+cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME}
+  api-key: ${CLOUDINARY_API_KEY}
+  api-secret: ${CLOUDINARY_API_SECRET}

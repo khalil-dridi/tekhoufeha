@@ -7,6 +7,7 @@ import com.tekhoufeha.userservice.entity.UserProfile;
 import com.tekhoufeha.userservice.exception.UserProfileNotFoundException;
 import com.tekhoufeha.userservice.mapper.UserProfileMapper;
 import com.tekhoufeha.userservice.repository.UserProfileRepository;
+import com.tekhoufeha.userservice.service.CloudinaryService;
 import com.tekhoufeha.userservice.service.UserProfileService;
 
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -27,6 +29,8 @@ public class UserProfileServiceImpl implements UserProfileService {
     private final UserProfileRepository userProfileRepository;
 
     private final UserProfileMapper userProfileMapper;
+
+    private final CloudinaryService cloudinaryService;
 
 
     @Value("${app.default-avatar-url}")
@@ -42,7 +46,6 @@ public class UserProfileServiceImpl implements UserProfileService {
                 userProfileRepository.findByAuthUserId(authUserId)
                         .orElseGet(() -> {
 
-
                             UserProfile newProfile =
                                     UserProfile.builder()
                                             .authUserId(authUserId)
@@ -55,9 +58,9 @@ public class UserProfileServiceImpl implements UserProfileService {
                         });
 
 
-
         return userProfileMapper.toResponse(profile);
     }
+
 
 
 
@@ -98,17 +101,72 @@ public class UserProfileServiceImpl implements UserProfileService {
                         );
 
 
-
         userProfileMapper.updateEntity(
                 profile,
                 request
         );
 
 
-        // Vérification automatique de complétion du profil
         profile.setProfileCompleted(
                 isProfileCompleted(profile)
         );
+
+
+        UserProfile updatedProfile =
+                userProfileRepository.save(profile);
+
+
+        return userProfileMapper.toResponse(updatedProfile);
+    }
+
+
+
+
+
+    @Override
+    public UserProfileResponse updateAvatar(
+            UUID authUserId,
+            MultipartFile file) {
+
+
+        UserProfile profile =
+                userProfileRepository.findByAuthUserId(authUserId)
+                        .orElseThrow(() ->
+                                new UserProfileNotFoundException(
+                                        "User profile not found"
+                                )
+                        );
+
+
+        String oldAvatarUrl =
+                profile.getAvatarUrl();
+
+
+        /*
+         Suppression de l'ancien avatar uniquement
+         si ce n'est pas l'avatar par défaut
+        */
+        if (oldAvatarUrl != null
+                && !oldAvatarUrl.equals(defaultAvatarUrl)) {
+
+
+            String publicId =
+                    cloudinaryService.extractPublicId(
+                            oldAvatarUrl
+                    );
+
+
+            cloudinaryService.deleteImage(publicId);
+        }
+
+
+
+        String newAvatarUrl =
+                cloudinaryService.uploadImage(file);
+
+
+
+        profile.setAvatarUrl(newAvatarUrl);
 
 
 
@@ -116,19 +174,64 @@ public class UserProfileServiceImpl implements UserProfileService {
                 userProfileRepository.save(profile);
 
 
-
-        return userProfileMapper.toResponse(
-                updatedProfile
-        );
+        return userProfileMapper.toResponse(updatedProfile);
     }
 
 
 
 
 
-    /**
-     * Vérifie si l'utilisateur a terminé les informations obligatoires
-     */
+    @Override
+    public UserProfileResponse removeAvatar(UUID authUserId) {
+
+
+        UserProfile profile =
+                userProfileRepository.findByAuthUserId(authUserId)
+                        .orElseThrow(() ->
+                                new UserProfileNotFoundException(
+                                        "User profile not found"
+                                )
+                        );
+
+
+
+        String currentAvatarUrl =
+                profile.getAvatarUrl();
+
+
+
+        if (currentAvatarUrl != null
+                && !currentAvatarUrl.equals(defaultAvatarUrl)) {
+
+
+            String publicId =
+                    cloudinaryService.extractPublicId(
+                            currentAvatarUrl
+                    );
+
+
+            cloudinaryService.deleteImage(publicId);
+        }
+
+
+
+        profile.setAvatarUrl(defaultAvatarUrl);
+
+
+
+        UserProfile updatedProfile =
+                userProfileRepository.save(profile);
+
+
+        return userProfileMapper.toResponse(updatedProfile);
+    }
+
+
+
+
+
+
+
     private boolean isProfileCompleted(UserProfile profile) {
 
         return profile.getFirstName() != null
