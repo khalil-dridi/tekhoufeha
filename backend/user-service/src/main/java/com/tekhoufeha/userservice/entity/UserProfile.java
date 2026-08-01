@@ -47,6 +47,9 @@ public class UserProfile {
     private String avatarUrl;
 
 
+    private String avatarPublicId;
+
+
     private String bio;
 
 

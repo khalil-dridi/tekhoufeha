@@ -4,6 +4,7 @@ package com.tekhoufeha.userservice.service.impl;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 
+import com.tekhoufeha.userservice.dto.response.CloudinaryUploadResponse;
 import com.tekhoufeha.userservice.exception.CloudinaryUploadException;
 import com.tekhoufeha.userservice.exception.InvalidImageException;
 import com.tekhoufeha.userservice.service.CloudinaryService;
@@ -13,8 +14,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+
 import java.io.IOException;
 import java.util.Map;
+
 
 
 @Service
@@ -27,13 +30,16 @@ public class CloudinaryServiceImpl implements CloudinaryService {
 
 
     @Override
-    public String uploadImage(MultipartFile file) {
+    public CloudinaryUploadResponse uploadImage(
+            MultipartFile file
+    ) {
 
 
         validateImage(file);
 
 
         try {
+
 
             Map uploadResult =
                     cloudinary.uploader()
@@ -43,12 +49,23 @@ public class CloudinaryServiceImpl implements CloudinaryService {
                             );
 
 
-            return uploadResult
-                    .get("secure_url")
-                    .toString();
+
+            return new CloudinaryUploadResponse(
+
+                    uploadResult
+                            .get("secure_url")
+                            .toString(),
+
+                    uploadResult
+                            .get("public_id")
+                            .toString()
+
+            );
+
 
 
         } catch (IOException e) {
+
 
             throw new CloudinaryUploadException(
                     "Failed to upload image to Cloudinary",
@@ -70,7 +87,9 @@ public class CloudinaryServiceImpl implements CloudinaryService {
         }
 
 
+
         try {
+
 
             cloudinary.uploader()
                     .destroy(
@@ -79,7 +98,9 @@ public class CloudinaryServiceImpl implements CloudinaryService {
                     );
 
 
+
         } catch (IOException e) {
+
 
             throw new CloudinaryUploadException(
                     "Failed to delete image from Cloudinary",
@@ -92,45 +113,12 @@ public class CloudinaryServiceImpl implements CloudinaryService {
 
 
 
-    @Override
-    public String extractPublicId(String imageUrl) {
-
-
-        if (imageUrl == null || imageUrl.isBlank()) {
-            return null;
-        }
-
-
-        /*
-         Exemple:
-         https://res.cloudinary.com/dqrtwfpbq/image/upload/v1785420725/photo123.jpg
-
-         résultat:
-         photo123
-        */
-
-
-        String[] parts = imageUrl.split("/");
-
-
-        String fileName =
-                parts[parts.length - 1];
-
-
-        return fileName.substring(
-                0,
-                fileName.lastIndexOf('.')
-        );
-    }
-
-
-
-
 
     private void validateImage(MultipartFile file) {
 
 
         if (file == null || file.isEmpty()) {
+
 
             throw new InvalidImageException(
                     "Image file is required"
@@ -139,8 +127,10 @@ public class CloudinaryServiceImpl implements CloudinaryService {
 
 
 
+
         if (file.getContentType() == null ||
                 !file.getContentType().startsWith("image/")) {
+
 
 
             throw new InvalidImageException(

@@ -35,6 +35,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 
 @Service
 @RequiredArgsConstructor
@@ -268,14 +270,19 @@ public class AuthService {
 
 
 
-    public UserProfileResponse getCurrentUser(Authentication authentication) {
+    public UserProfileResponse getCurrentUser(
+            Authentication authentication
+    ) {
 
 
-        String email = authentication.getName();
+        UUID userId =
+                UUID.fromString(
+                        authentication.getName()
+                );
 
 
         AuthUser authUser =
-                authUserRepository.findByEmail(email)
+                authUserRepository.findById(userId)
                         .orElseThrow(() ->
                                 new InvalidCredentialsException(
                                         "User not found."
@@ -297,11 +304,14 @@ public class AuthService {
             Authentication authentication) {
 
 
-        String email = authentication.getName();
+        UUID userId =
+                UUID.fromString(
+                        authentication.getName()
+                );
 
 
         AuthUser authUser =
-                authUserRepository.findByEmail(email)
+                authUserRepository.findById(userId)
                         .orElseThrow(() ->
                                 new InvalidCredentialsException(
                                         "User not found."

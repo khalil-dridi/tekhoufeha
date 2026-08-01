@@ -2,6 +2,7 @@ package com.tekhoufeha.userservice.service.impl;
 
 
 import com.tekhoufeha.userservice.dto.request.UpdateProfileRequest;
+import com.tekhoufeha.userservice.dto.response.CloudinaryUploadResponse;
 import com.tekhoufeha.userservice.dto.response.UserProfileResponse;
 import com.tekhoufeha.userservice.entity.UserProfile;
 import com.tekhoufeha.userservice.exception.UserProfileNotFoundException;
@@ -50,6 +51,7 @@ public class UserProfileServiceImpl implements UserProfileService {
                                     UserProfile.builder()
                                             .authUserId(authUserId)
                                             .avatarUrl(defaultAvatarUrl)
+                                            .avatarPublicId(null)
                                             .profileCompleted(false)
                                             .build();
 
@@ -138,40 +140,35 @@ public class UserProfileServiceImpl implements UserProfileService {
                         );
 
 
-        String oldAvatarUrl =
-                profile.getAvatarUrl();
 
+        if (profile.getAvatarPublicId() != null) {
 
-        /*
-         Suppression de l'ancien avatar uniquement
-         si ce n'est pas l'avatar par défaut
-        */
-        if (oldAvatarUrl != null
-                && !oldAvatarUrl.equals(defaultAvatarUrl)) {
-
-
-            String publicId =
-                    cloudinaryService.extractPublicId(
-                            oldAvatarUrl
-                    );
-
-
-            cloudinaryService.deleteImage(publicId);
+            cloudinaryService.deleteImage(
+                    profile.getAvatarPublicId()
+            );
         }
 
 
 
-        String newAvatarUrl =
+        CloudinaryUploadResponse upload =
                 cloudinaryService.uploadImage(file);
 
 
 
-        profile.setAvatarUrl(newAvatarUrl);
+        profile.setAvatarUrl(
+                upload.url()
+        );
+
+
+        profile.setAvatarPublicId(
+                upload.publicId()
+        );
 
 
 
         UserProfile updatedProfile =
                 userProfileRepository.save(profile);
+
 
 
         return userProfileMapper.toResponse(updatedProfile);
@@ -182,7 +179,8 @@ public class UserProfileServiceImpl implements UserProfileService {
 
 
     @Override
-    public UserProfileResponse removeAvatar(UUID authUserId) {
+    public UserProfileResponse removeAvatar(
+            UUID authUserId) {
 
 
         UserProfile profile =
@@ -195,32 +193,30 @@ public class UserProfileServiceImpl implements UserProfileService {
 
 
 
-        String currentAvatarUrl =
-                profile.getAvatarUrl();
+        if (profile.getAvatarPublicId() != null) {
 
 
-
-        if (currentAvatarUrl != null
-                && !currentAvatarUrl.equals(defaultAvatarUrl)) {
-
-
-            String publicId =
-                    cloudinaryService.extractPublicId(
-                            currentAvatarUrl
-                    );
-
-
-            cloudinaryService.deleteImage(publicId);
+            cloudinaryService.deleteImage(
+                    profile.getAvatarPublicId()
+            );
         }
 
 
 
-        profile.setAvatarUrl(defaultAvatarUrl);
+        profile.setAvatarUrl(
+                defaultAvatarUrl
+        );
+
+
+        profile.setAvatarPublicId(
+                null
+        );
 
 
 
         UserProfile updatedProfile =
                 userProfileRepository.save(profile);
+
 
 
         return userProfileMapper.toResponse(updatedProfile);
