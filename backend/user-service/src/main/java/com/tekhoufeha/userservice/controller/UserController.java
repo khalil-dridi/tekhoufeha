@@ -12,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-import org.springframework.security.core.Authentication;
-
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,14 +32,8 @@ public class UserController {
 
     @PostMapping("/profile/init")
     public ResponseEntity<UserProfileResponse> initProfile(
-            Authentication authentication
+            @RequestHeader("X-User-Id") UUID authUserId
     ) {
-
-
-        UUID authUserId =
-                UUID.fromString(
-                        authentication.getName()
-                );
 
 
         return ResponseEntity.ok(
@@ -55,14 +47,8 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<UserProfileResponse> getProfile(
-            Authentication authentication
+            @RequestHeader("X-User-Id") UUID authUserId
     ) {
-
-
-        UUID authUserId =
-                UUID.fromString(
-                        authentication.getName()
-                );
 
 
         return ResponseEntity.ok(
@@ -77,17 +63,11 @@ public class UserController {
 
     @PutMapping("/me")
     public ResponseEntity<UserProfileResponse> updateProfile(
-            Authentication authentication,
+            @RequestHeader("X-User-Id") UUID authUserId,
 
             @Valid
             @RequestBody UpdateProfileRequest request
     ) {
-
-
-        UUID authUserId =
-                UUID.fromString(
-                        authentication.getName()
-                );
 
 
         return ResponseEntity.ok(
@@ -108,15 +88,10 @@ public class UserController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     public ResponseEntity<UserProfileResponse> updateAvatar(
-            Authentication authentication,
+            @RequestHeader("X-User-Id") UUID authUserId,
+
             @RequestParam("file") MultipartFile file
     ) {
-
-
-        UUID authUserId =
-                UUID.fromString(
-                        authentication.getName()
-                );
 
 
         return ResponseEntity.ok(
@@ -134,14 +109,8 @@ public class UserController {
 
     @DeleteMapping("/me/avatar")
     public ResponseEntity<UserProfileResponse> removeAvatar(
-            Authentication authentication
+            @RequestHeader("X-User-Id") UUID authUserId
     ) {
-
-
-        UUID authUserId =
-                UUID.fromString(
-                        authentication.getName()
-                );
 
 
         return ResponseEntity.ok(

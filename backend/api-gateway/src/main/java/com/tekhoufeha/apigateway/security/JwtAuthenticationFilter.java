@@ -1,13 +1,26 @@
 package com.tekhoufeha.apigateway.security;
 
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tekhoufeha.apigateway.dto.ErrorResponse;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+
 import org.springframework.stereotype.Component;
+
 import org.springframework.web.server.ServerWebExchange;
+
 import reactor.core.publisher.Mono;
+
+
+import java.time.LocalDateTime;
+
 
 
 @Component
@@ -15,7 +28,12 @@ import reactor.core.publisher.Mono;
 public class JwtAuthenticationFilter implements GlobalFilter {
 
 
+
     private final JwtService jwtService;
+
+    private final ObjectMapper objectMapper;
+
+
 
 
     @Override
@@ -24,10 +42,12 @@ public class JwtAuthenticationFilter implements GlobalFilter {
             GatewayFilterChain chain) {
 
 
+
         String path =
                 exchange.getRequest()
                         .getURI()
                         .getPath();
+
 
 
         // Routes publiques
@@ -35,8 +55,10 @@ public class JwtAuthenticationFilter implements GlobalFilter {
                 || path.startsWith("/api/auth/register")
                 || path.startsWith("/oauth2")) {
 
+
             return chain.filter(exchange);
         }
+
 
 
 
@@ -48,11 +70,15 @@ public class JwtAuthenticationFilter implements GlobalFilter {
                         );
 
 
+
         if (authHeader == null
                 || !authHeader.startsWith("Bearer ")) {
 
+
             return unauthorized(exchange);
         }
+
+
 
 
         String token =
@@ -60,15 +86,41 @@ public class JwtAuthenticationFilter implements GlobalFilter {
 
 
 
+
         if (!jwtService.isTokenValid(token)) {
+
 
             return unauthorized(exchange);
         }
 
 
 
-        return chain.filter(exchange);
+
+        String userId =
+                jwtService.extractUserId(token);
+
+
+
+
+        ServerWebExchange modifiedExchange =
+                exchange.mutate()
+                        .request(request ->
+                                request.headers(headers ->
+                                        headers.add(
+                                                "X-User-Id",
+                                                userId
+                                        )
+                                )
+                        )
+                        .build();
+
+
+
+        return chain.filter(modifiedExchange);
     }
+
+
+
 
 
 
@@ -77,14 +129,54 @@ public class JwtAuthenticationFilter implements GlobalFilter {
             ServerWebExchange exchange) {
 
 
+        ErrorResponse error =
+                new ErrorResponse(
+                        LocalDateTime.now(),
+                        HttpStatus.UNAUTHORIZED.value(),
+                        "Invalid or expired JWT token"
+                );
+
+
+
         exchange.getResponse()
                 .setStatusCode(
                         HttpStatus.UNAUTHORIZED
                 );
 
 
-        return exchange.getResponse()
-                .setComplete();
+        exchange.getResponse()
+                .getHeaders()
+                .add(
+                        HttpHeaders.CONTENT_TYPE,
+                        "application/json"
+                );
+
+
+
+        try {
+
+
+            byte[] bytes =
+                    objectMapper.writeValueAsBytes(error);
+
+
+
+            return exchange.getResponse()
+                    .writeWith(
+                            Mono.just(
+                                    exchange.getResponse()
+                                            .bufferFactory()
+                                            .wrap(bytes)
+                            )
+                    );
+
+
+        } catch (Exception exception) {
+
+
+            return exchange.getResponse()
+                    .setComplete();
+        }
     }
 
 }
