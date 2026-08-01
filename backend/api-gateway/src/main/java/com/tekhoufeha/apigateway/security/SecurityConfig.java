@@ -21,7 +21,6 @@ public class SecurityConfig {
 
                 .authorizeExchange(exchange -> exchange
 
-                        // Auth publique
                         .pathMatchers(
                                 "/api/auth/login",
                                 "/api/auth/register",
@@ -29,9 +28,8 @@ public class SecurityConfig {
                         )
                         .permitAll()
 
-                        // Le reste nécessite JWT
                         .anyExchange()
-                        .authenticated()
+                        .permitAll()
                 )
 
                 .build();

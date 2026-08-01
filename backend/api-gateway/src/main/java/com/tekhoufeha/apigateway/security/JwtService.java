@@ -35,7 +35,7 @@ public class JwtService {
     }
 
 
-    public String extractUsername(String token) {
+    public String extractUserId(String token) {
 
         return extractAllClaims(token)
                 .getSubject();
@@ -60,9 +60,12 @@ public class JwtService {
 
         try {
 
-            extractAllClaims(token);
+            Claims claims = extractAllClaims(token);
 
-            return !isTokenExpired(token);
+            return claims.getSubject() != null
+                    && !claims.getSubject().isBlank()
+                    && !claims.getExpiration().before(new Date());
+
 
         } catch (Exception e) {
 
